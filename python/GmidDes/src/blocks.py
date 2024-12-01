@@ -1,4 +1,66 @@
 '''
+Keyword Dictionary
+'''
+BASEKEYWORDS = {
+    "all",
+    "gmid",
+    "labels",
+    "NMOS",
+    "PMOS",
+    "print",
+    "size",
+    "load",
+}
+
+'''
+Binary Operator Dictionary:
+'''
+BASEBOPERATORS = {
+    "=",
+    "+",
+    "-",
+    "*",
+    "/",
+    "%",
+    "@",
+    "?", 
+    ">", 
+    "<", 
+    ">=", 
+    "<=", 
+    ">>"
+}
+
+'''
+Unary Operators Dictionary:
+'''
+BASEUOPERATORS = {
+    
+}
+
+'''
+Supported SIUNITS
+'''
+SIUNITS = {
+    "y" : 1e-24,
+    "z" : 1e-21,
+    "a" : 1e-18,
+    "f" : 1e-15,
+    "p" : 1e-12,
+    "n" : 1e-9,
+    "u" : 1e-6,
+    "m" : 1e-3,
+    "k" : 1e3,
+    "M" : 1e6,
+    "G" : 1e9,
+    "T" : 1e12,
+    "P" : 1e15,
+    "E" : 1e18,
+    "Z" : 1e21,
+    "Y" : 1e24
+}
+
+'''
 Blocks for Tokens
 '''
 class Token():
@@ -10,6 +72,9 @@ class Token():
     def __repr__(self) -> str:
         return f"Token({self.kind}, {repr(self.value)})"
 
+    def __eq__(self, aToken) -> bool:
+        return ((self.kind == aToken.kind) and (self.value == aToken.value))
+        
     def toStr(self):
         return f"Token({self.kind}, {repr(self.value)})"
 '''

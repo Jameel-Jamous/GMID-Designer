@@ -1,0 +1,7 @@
+all
+gmid
+labels
+NMOS
+PMOS
+print
+size

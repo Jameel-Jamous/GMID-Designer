@@ -8,7 +8,8 @@ class gmidTestCase(unittest.TestCase):
 
 common = {
     "NMOS_DIR" : r"C:\Users\Jameel\Desktop\GMIDDesigner\python\sample_data\test\nmos",
-    "PMOS_DIR" : "../../sampple_data/test/pmos",
+    "PMOS_DIR" : r"C:\Users\Jameel\Desktop\GMIDDesigner\python\sample_data\test\nmos",
+    "SAMPLE_DIR" : r"C:\Users\Jameel\Desktop\GMIDDesigner\python\sample_data",
     "NOIMP" : "Test Not Yet Implemented",
     "EXIT" : "Exitted with error_code: ",
 }

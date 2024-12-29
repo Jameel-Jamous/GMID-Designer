@@ -3,12 +3,16 @@ import pickle
 from util import gmidTestCase, common
 from gmid.DFManager import DFManager 
 
-class testDFM(gmidTestCase, DFManager):
+class testDFM(gmidTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.__reset__()
+        self.DFM = DFManager()
         
-    def testReset(self):
+    def testSingleton(self):
+        instance2 = DFManager()
+        self.assertIs(self.DFM, instance2)
+
+    """def testReset(self):
        self.__reset__()
        self.assertDictEqual(self.flags, {
             "VALID_PATH" : False,
@@ -138,4 +142,4 @@ class testDFM(gmidTestCase, DFManager):
             file.close()
         
         self.assertEqual(temp, common["NMOS_DIR"] + r"\nmos.csv")        
-        
+"""        

@@ -1,4 +1,5 @@
 setup.py
+gmid/DFManager.py
 gmid/__init__.py
 gmid/cli.py
 gmid.egg-info/PKG-INFO
@@ -9,5 +10,12 @@ gmid.egg-info/requires.txt
 gmid.egg-info/top_level.txt
 gmid/commands/__init__.py
 gmid/commands/hello.py
+gmid/commands/link.py
+gmid/commands/set.py
 gmid/utils/__init__.py
+gmid/utils/frame.py
 tests/__init__.py
+tests/test_DFManager.py
+tests/test_hello.py
+tests/test_link.py
+tests/util.py

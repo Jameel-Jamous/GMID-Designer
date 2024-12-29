@@ -1,17 +1,42 @@
 import pandas as pd
 import os
+import click
 import pickle
+from gmid.utils.singleton import singleton
+from functools import wraps
 
+@singleton
 class DFManager():
-    def __init__(self, path):
+    def __init__(self):
         self.__reset__()
-        if(self.setPath(path)):
-            self.picklePath()
+    
+    def __reset__(self):
+        self._instance = None
+        self.flags = {
+            "VALID_FILE" : False,
+            "EMPTY_FILE" : False,
+            "INVALID_FILE" : False,
+        }
+        self.df = None
+        self.headers = ['vov', 'gmid'] 
+
 
     def openDF(self):
         return 
+    
+    def dynamicAddOptions(self, func, hasArgs=True):
+        if(self.headers != []):
+            for name in self.headers:
+                def decorator(f):
+                    @click.option(f'--{name}', type=float if hasArgs else None, help=f'Header for \'{name}\' data')
+                    @wraps(f)
+                    def wrapper(*args, **kwargs):
+                        return f(*args, **kwargs)
+                    return wrapper
+                func = decorator(func)
+            return func
 
-    def setPath(self, aPath):
+"""    def setPath(self, aPath):
         isValidPath = self.__checkValidPath__(aPath)
         
         if(isValidPath):
@@ -88,15 +113,5 @@ class DFManager():
     
     def __checkValidPath__(self, thePath : str):
         return os.path.exists(thePath) and thePath.endswith(".csv")
-
-    def __reset__(self):
-        self.flags = {
-            "VALID_PATH" : False,
-            "INVALID_PATH" : False,
-            "VALID_FILE" : False,
-            "EMPTY_FILE" : False,
-            "INVALID_FILE" : False,
-        }
-        self.path = ""
-        self.df = None
-        self.headers = [] 
+"""
+    

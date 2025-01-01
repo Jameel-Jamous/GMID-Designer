@@ -1,11 +1,11 @@
 import click
-from gmid.DFManager import DFManager
-
 
 @click.command(name='set')
-@click.argument('value', required=True)
-@click.option('--p', '--param', type=str, required=False)
+@click.argument('value_to_set', required=True)
+@click.option('-h', '--head', type=str, required=False, help="Header to set.")
 def main(*args, **kwargs):
+    """Set a header to be interpolated at a value.\n
+    Run \'view -h\' to view all possible header to use."""
     click.echo("It Worked")
     for item in args:
         click.echo(f"{item}")

@@ -1,17 +1,17 @@
 import click
-from gmid.DFManager import DFManager
-    
-def main(*args, **kwargs):
-    pass 
-
+ 
 @click.command(name='interp')
-@click.argument('value', required=False)
-@click.option('--p', '--param', multiple=True, required=False)
-@click.option('--a', '--annotated', is_flag=True, default=False, required=False)
+@click.argument('header', required=False)
+@click.option('-h', '--head', multiple=True, required=False, help="Header to interpolate.")
+@click.option('-a', '--annotated', is_flag=True, default=False, required=False, help='Displays an Annotated Plot')
 def main(*args, **kwargs):
-    click.echo("It Worked")
-    for item in args:
-        click.echo(f"{item}")
-
+    """Interpolate a header at a value established in \'set\'.\n
+    Run \'view -h\' to view all possible header to use."""
+    # For Debugging
     for key, value in kwargs.items():
         click.echo(f"{key}: {value}")
+
+    '''    
+    context = InterpOptionContext(*args, **kwargs)
+    context.execute()
+    '''

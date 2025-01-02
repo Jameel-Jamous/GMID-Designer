@@ -34,5 +34,16 @@ class testSetValueStrat(gmidTestCase):
         self.tag = ""
 
     def test_setValueStrat(self):
+        strat = SetValueStrat("10")
+        self.assertEqual(10, strat.value)
+
+        strat = SetValueStrat("ABC")
+        self.assertEqual(10, strat.value)
+
         strat = SetValueStrat(10)
         self.assertEqual(10, strat.value)
+        
+    def test_executeValueStrat(self):
+        strat = SetValueStrat(10)
+        value = strat.execute()
+        self.assertEqual(value, setterInstance.value)

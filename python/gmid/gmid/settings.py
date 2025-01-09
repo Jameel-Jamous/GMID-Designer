@@ -17,6 +17,8 @@ class Setter():
         self.df = None
         self._value_ = None
         self._header_ = ""
+        self.prevHead = None
+        self.prevValue = None 
         self.paths = {
             "Install" : "",
             "Data" : "",

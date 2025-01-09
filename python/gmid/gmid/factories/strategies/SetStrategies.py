@@ -9,6 +9,7 @@ class SetHeadStrat(OptionStrategy):
         
 
     def execute(self):
+        setterInstance.prevHead = setterInstance.header 
         if((self.header == None) or (self.header == "")):
             setterInstance.header = "gmid"
         else:
@@ -31,12 +32,11 @@ class SetValueStrat(OptionStrategy):
 
     def execute(self):
         self.prevVal = setterInstance.value
-        self.prevHead = setterInstance.header
         setterInstance.value = self.value
         return setterInstance.value
     
     def print(self):
         outstr = f" set to \'{setterInstance.value}\'"
-        if(self.prevVal != setterInstance.value and self.prevHead == setterInstance.header):
+        if(self.prevVal != setterInstance.value and setterInstance.prevHead == setterInstance.header):
             outstr += f" was \'{self.prevVal}\'"
         return outstr 

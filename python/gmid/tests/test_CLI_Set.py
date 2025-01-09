@@ -20,6 +20,14 @@ class testCLISet(gmidTestCase):
     
     def testSetOther(self):
         executed = self.cli.invoke(main, ['1', '-h', 'vov'])
-        self.assertEqual(f"\'vov\' set to \'1.0\'", executed.output)
+        self.assertEqual(f"\'vov\' set to \'1.0\'\n", executed.output)
         self.assertEqual("vov", setterInstance.header)
         self.assertEqual(SI("1"), setterInstance.value)
+    
+    def testSetOtherFromOther(self):
+        self.cli.invoke(main, ['1', '-h', 'vov'])
+        executed = self.cli.invoke(main, ['2', '-h', 'vov'])
+        self.assertEqual("\'vov\' set to \'2.0\' was \'1.0\'\n", executed.output)
+        self.assertEqual("vov", setterInstance.header)
+        self.assertEqual(SI("2"), setterInstance.value) 
+        

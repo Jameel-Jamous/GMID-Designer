@@ -1,5 +1,6 @@
 from gmid.contexts.OptionContext import OptionContext
 from gmid.factories.Factory import MainFactory
+from gmid.factories.strategies.SetStrategies import SetHeadStrat, SetValueStrat
 
 class SetOptionContext(OptionContext):
     def __init__(self, args, kwargs):
@@ -21,8 +22,12 @@ class SetOptionContext(OptionContext):
         return self
             
     def print(self):
-        temp = ""
+        tail = ""
+        head = ""
         if(not self.isEmpty()):
             for item in self.strategies:
-                temp += item.print()
-        return temp 
+                if(isinstance(item, SetHeadStrat)):
+                    head = item.print()
+                else:
+                    tail += item.print()
+        return head + tail 

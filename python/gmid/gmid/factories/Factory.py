@@ -62,9 +62,9 @@ class VSPlotFactory():
 class SetFactory():
     @staticmethod
     def create(strat : str, params):
-        if(strat == "header"):
+        if(strat == "head"):
             return SetHeadStrat(params)
-        elif(strat == "pdf"):
+        elif(strat == "value_to_set"):
             return SetValueStrat(params)
         else:
             raise ValueError("Unknown Set Strategy Type")

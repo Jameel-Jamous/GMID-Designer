@@ -6,3 +6,7 @@ class OptionStrategy(ABC):
     @abstractmethod
     def execute():
         pass
+
+    @abstractmethod
+    def print():
+        pass

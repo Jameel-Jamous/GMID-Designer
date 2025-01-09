@@ -1,3 +1,4 @@
+from gmid.contexts.SetOptionContext import SetOptionContext
 import click
 
 @click.command(name='set')
@@ -12,3 +13,6 @@ def main(*args, **kwargs):
 
     for key, value in kwargs.items():
         click.echo(f"{key}: {value}")
+    
+    context = SetOptionContext(args, kwargs)
+    click.echo(context.execute().print())

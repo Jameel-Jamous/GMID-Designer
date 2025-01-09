@@ -1,5 +1,6 @@
 import click
- 
+from gmid.contexts.InterpOptionContext import InterpOptionContext
+
 @click.command(name='interp')
 @click.argument('header', required=False)
 @click.option('-h', '--head', multiple=True, required=False, help="Header to interpolate.")
@@ -11,7 +12,5 @@ def main(*args, **kwargs):
     for key, value in kwargs.items():
         click.echo(f"{key}: {value}")
 
-    '''    
-    context = InterpOptionContext(*args, **kwargs)
-    context.execute()
-    '''
+    context = InterpOptionContext(args, kwargs)
+    click.echo(context.execute().print())

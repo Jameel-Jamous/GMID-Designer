@@ -2,40 +2,65 @@
 # into the Setter. We must pull it from the set environment variables
 import os
 import pickle
-import pandas as pd 
+from pathlib import Path
+
+import pandas as pd
+
 from gmid.utils.SI import SI
 
-class Setter():
+
+class Setter:
     def __init__(self):
         self.__reset__()
-        self.initPaths()
-        self.initDf()
-        self._header_ = self.load("Header")
-        self._value_ = self.load("Value")
-        
+        self.hasValidPath = self.initPaths()
+        self.hasValidDF = self.initDf()
+        try:
+            self._header_ = self.load("Header")
+        except EOFError:
+            self.header = "gmid"
+        try:
+            self._value_ = self.load("Value")
+        except EOFError:
+            self.value = None
+        self.valueFlag = self.getValueFlags(self._value_)
+
     def __reset__(self):
         self.df = None
         self._value_ = None
         self._header_ = ""
         self.prevHead = None
-        self.prevValue = None 
+        self.prevValue = None
         self.paths = {
-            "Install" : "",
-            "Data" : "",
-            "Config" : "",
+            "Install": "",
+            "Data": "",
+            "Config": "",
         }
-    
+        self.hasValidDF = False
+        self.hasValidDF = False
+        self.valueFlag = []
+
     def initPaths(self):
-        paths = os.getenv("GMID_PATHS").split(";")
-        self.paths["Install"] = paths[0]
-        self.paths["Data"] = paths[1]
-        self.paths["Config"] = paths[2]
-        return not (self.paths["Install"] == "" and self.paths["Data"] == "" 
-                and self.paths["Config"] == "")
-    
+        if os.name == "posix":
+            delim = ":"
+        else:
+            delim = ";"
+        paths = os.getenv("GMID_PATHS")
+        if paths is None:
+            raise FileNotFoundError
+        else:
+            paths = paths.split(delim)
+            self.paths["Install"] = Path(paths[0])
+            self.paths["Data"] = Path(paths[1])
+            self.paths["Config"] = Path(paths[2])
+        return not (
+            self.paths["Install"] == ""
+            and self.paths["Data"] == ""
+            and self.paths["Config"] == ""
+        )
+
     def initDf(self):
         ret = True
-        if(not self.paths["Data"] == ""):
+        if not self.paths["Data"] == "":
             try:
                 self.df = pd.read_csv(self.paths["Data"])
             except FileNotFoundError:
@@ -43,7 +68,7 @@ class Setter():
             except FileExistsError:
                 ret = False
         return ret
-       
+
     @property
     def header(self) -> str:
         return self._header_
@@ -51,27 +76,44 @@ class Setter():
     @header.setter
     def header(self, aHeader):
         self._header_ = aHeader
-        with open(self.paths["Install"] + r"\pkl\header.pkl", 'wb') as file:
-            pickle.dump(aHeader, file)
+        if aHeader in self.df.columns:
+            with open(self.paths["Install"] / "pkl" / "header.pkl", "wb") as file:
+                pickle.dump(aHeader, file)
 
     @property
     def value(self) -> SI:
         return self._value_
-    
+
     @value.setter
     def value(self, aValue):
-        with open(self.paths["Install"] + r"\pkl\value.pkl", 'wb') as file:
+        with open(self.paths["Install"] / "pkl" / "value.pkl", "wb") as file:
             pickle.dump(aValue, file)
         self._value_ = aValue
-    
-    def load(self, what : str):
+        self.valueFlag = []
+        self.valueFlag = self.getValueFlags(aValue)
+
+    def load(self, what: str):
         temp = None
-        if(what == "Header"):
-            with open(self.paths["Install"] + r"\pkl\header.pkl", 'rb') as file:
+        if what == "Header":
+            with open(self.paths["Install"] / "pkl" / "header.pkl", "rb") as file:
                 temp = pickle.load(file)
-        elif(what == "Value"):
-           with open(self.paths["Install"] + r"\pkl\value.pkl", 'rb') as file:
-                temp = pickle.load(file) 
-        return temp 
-            
+        elif what == "Value":
+            with open(self.paths["Install"] / "pkl" / "value.pkl", "rb") as file:
+                temp = pickle.load(file)
+        return temp
+
+    def getValueFlags(self, value):
+        ret = []
+        if not self.valueInBounds(value):
+            ret.append("OutOfBounds")
+        return ret
+
+    def valueInBounds(self, value):
+        ret = False
+        if self.hasValidDF:
+            bounds = (self.df[self._header_].iloc[0], self.df[self._header_].iloc[-1])
+            ret = value > bounds[0] and value < bounds[1]
+        return ret
+
+
 setterInstance = Setter()

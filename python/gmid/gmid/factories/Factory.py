@@ -1,84 +1,108 @@
-from gmid.factories.strategies.InterpStrategies import InterpAnnotateStrat, InterpHeaderStrat, InterpHeadStrat
-from gmid.factories.strategies.PlotStrategies import PlotHeaderStrat, PlotPdfStrat, PlotJpegStrat, PlotHeadStrat
-from gmid.factories.strategies.VSPlotStrategies import VSPlotHeaderStrat, VSPlotPdfStrat, VSPlotJpegStrat
+from gmid.factories.strategies.InterpStrategies import (
+    InterpAnnotateStrat,
+    InterpHeaderStrat,
+    InterpHeadStrat,
+)
+from gmid.factories.strategies.PlotStrategies import (
+    PlotHeaderStrat,
+    PlotHeadStrat,
+    PlotJpegStrat,
+    PlotPdfStrat,
+)
 from gmid.factories.strategies.SetStrategies import SetHeadStrat, SetValueStrat
-from gmid.factories.strategies.ViewStrategies import ViewHeadStrat, ViewPathStrat, ViewVarListStrat, ViewVarStrat
+from gmid.factories.strategies.ViewStrategies import (
+    ViewAllHeadersStrat,
+    ViewHeadStrat,
+    ViewPathStrat,
+    ViewValueStrat,
+)
+from gmid.factories.strategies.VSPlotStrategies import (
+    VSPlotHeaderStrat,
+    VSPlotJpegStrat,
+    VSPlotPdfStrat,
+)
 
-class MainFactory():
+
+class MainFactory:
     @staticmethod
-    def create(fact : str):
-        if(fact == "Interp"):
+    def create(fact: str):
+        if fact == "Interp":
             return InterpFactory
-        elif(fact == "Plot"):
+        elif fact == "Plot":
             return PlotFactory
-        elif(fact == "VSPlot"):
+        elif fact == "VSPlot":
             return VSPlotFactory
-        elif(fact == "Set"):
+        elif fact == "Set":
             return SetFactory
-        elif(fact == "View"):
+        elif fact == "View":
             return ViewFactory
         else:
             raise ValueError("Unknown Factory Type")
 
-class InterpFactory():
+
+class InterpFactory:
     @staticmethod
-    def create(strat : str, params):
+    def create(strat: str, params):
         """Factory method that returns a strategy based on the input."""
-        if(strat == "header"):
+        if strat == "header":
             return InterpHeaderStrat(params)
-        elif(strat == "head"):
+        elif strat == "head":
             return InterpHeadStrat(params)
-        elif(strat == "annotated"):
+        elif strat == "annotated":
             return InterpAnnotateStrat(params)
         else:
             raise ValueError("Unknown Interp Strategy Type")
 
-class PlotFactory():
+
+class PlotFactory:
     @staticmethod
-    def create(strat : str, params):
-        if(strat == "header"):
+    def create(strat: str, params):
+        if strat == "header":
             return PlotHeaderStrat(params)
-        elif(strat == "pdf"):
+        elif strat == "pdf":
             return PlotPdfStrat(params)
-        elif(strat == "jpeg"):
+        elif strat == "jpeg":
             return PlotJpegStrat(params)
-        elif(strat == "head"):
+        elif strat == "head":
             return PlotHeadStrat(params)
         else:
             raise ValueError("Unknown Plot Strategy Type")
 
-class VSPlotFactory():
+
+class VSPlotFactory:
     @staticmethod
-    def create(strat : str, params):
-        if(strat == "header"):
+    def create(strat: str, params):
+        if strat == "header":
             return VSPlotHeaderStrat(params)
-        elif(strat == "pdf"):
+        elif strat == "pdf":
             return VSPlotPdfStrat(params)
-        elif(strat == "jpeg"):
+        elif strat == "jpeg":
             return VSPlotJpegStrat(params)
         else:
             raise ValueError("Unknown VSPlot Strategy Type")
 
-class SetFactory():
+
+class SetFactory:
     @staticmethod
-    def create(strat : str, params):
-        if(strat == "head"):
+    def create(strat: str, params):
+        if strat == "head":
             return SetHeadStrat(params)
-        elif(strat == "value_to_set"):
+        elif strat == "value_to_set":
             return SetValueStrat(params)
         else:
             raise ValueError("Unknown Set Strategy Type")
 
-class ViewFactory():
+
+class ViewFactory:
     @staticmethod
-    def create(strat : str, params):
-        if(strat == "head"):
+    def create(strat: str, params):
+        if strat == "using_head":
             return ViewHeadStrat(params)
-        elif(strat == "path"):
+        elif strat == "path":
             return ViewPathStrat(params)
-        elif(strat == "var"):
-            return ViewVarStrat(params)
-        elif(strat == "var_list"):
-            return ViewVarListStrat(params)
+        elif strat == "value":
+            return ViewValueStrat(params)
+        elif strat == "all_headers":
+            return ViewAllHeadersStrat(params)
         else:
-            raise ValueError("Unknown View Strategy Type")
+            raise ValueError(f"Unknown View Strategy Type: {strat}")

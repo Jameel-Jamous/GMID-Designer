@@ -1,10 +1,21 @@
 import click
+
 from gmid.contexts.InterpOptionContext import InterpOptionContext
 
-@click.command(name='interp')
-@click.argument('header', required=False)
-@click.option('-h', '--head', multiple=True, required=False, help="Header to interpolate.")
-@click.option('-a', '--annotated', is_flag=True, default=False, required=False, help='Displays an Annotated Plot')
+
+@click.command(name="interp")
+@click.argument("header", required=True)
+@click.option(
+    "-h", "--head", multiple=True, required=False, help="Header to interpolate."
+)
+@click.option(
+    "-a",
+    "--annotated",
+    is_flag=True,
+    default=False,
+    required=False,
+    help="Displays an Annotated Plot",
+)
 def main(*args, **kwargs):
     """Interpolate a header at a value established in \'set\'.\n
     Run \'view -h\' to view all possible header to use."""

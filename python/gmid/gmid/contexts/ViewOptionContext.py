@@ -2,7 +2,7 @@ from gmid.contexts.OptionContext import OptionContext
 from gmid.factories.Factory import MainFactory
 
 
-class InterpOptionContext(OptionContext):
+class ViewOptionContext(OptionContext):
     def __init__(self, args, kwargs):
         self.__reset__()
         super().__init__(args, kwargs)
@@ -13,7 +13,7 @@ class InterpOptionContext(OptionContext):
 
     def toStrategy(self):
         for keys, values in self.options.items():
-            self.append(MainFactory.create("Interp").create(keys, values))
+            self.append(MainFactory.create("View").create(keys, values))
 
     def execute(self):
         if not self.isEmpty():

@@ -20,8 +20,14 @@ def main(*args, **kwargs):
     """Interpolate a header at a value established in \'set\'.\n
     Run \'view -h\' to view all possible header to use."""
     # For Debugging
-    for key, value in kwargs.items():
-        click.echo(f"{key}: {value}")
+    # for key, value in kwargs.items():
+    #    click.echo(f"{key}: {value}")
+    #    if context.execute().isEmpty():
+    #        click.echo("Strategies were empty")
+    #    else:
+    #        click.echo(
+    #            f"output: {context.output}, stratgies: {context.strategies}\noptions: {context.options}"
+    #        )
 
     context = InterpOptionContext(args, kwargs)
     click.echo(context.execute().print())

@@ -3,6 +3,7 @@ import click
 from gmid.contexts.ViewOptionContext import ViewOptionContext
 
 
+# TODO: Refactor this is the 'diffPrint' style for print the output string see 'commands/interp.py'
 def displayPaths(paths):
     pathNames = ["Install Path", "Data Path", "Config Path(s)"]
     for path in paths:

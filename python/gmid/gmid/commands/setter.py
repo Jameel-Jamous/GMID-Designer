@@ -2,6 +2,8 @@ import click
 
 from gmid.contexts.SetOptionContext import SetOptionContext
 
+# TODO: Refactor this is the 'diffPrint' style for print the output string see 'commands/interp.py'
+
 
 @click.command(name="set")
 @click.argument("value_to_set", required=True)

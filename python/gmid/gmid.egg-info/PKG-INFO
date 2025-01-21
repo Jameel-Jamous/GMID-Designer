@@ -4,4 +4,3 @@ Version: 0.1.0
 Summary: A sample text
 Author: Jameel Jamous
 Author-email: jamjam5050@gmail.com
-Requires-Dist: click

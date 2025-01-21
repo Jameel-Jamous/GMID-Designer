@@ -1,7 +1,9 @@
+import pandas as pd
 from util import gmidTestCase
+
 from gmid.settings import setterInstance
 from gmid.utils.SI import SI
-import pandas as pd
+
 
 class testSetter(gmidTestCase):
     def testSingleton(self):
@@ -9,7 +11,7 @@ class testSetter(gmidTestCase):
         instance2 = setterInstance
         self.assertIs(instance1, instance2)
         self.assertEqual(instance1.header, instance2.header)
-        
+
     def testInitPaths(self):
         pathsFound = setterInstance.initPaths()
         self.assertEqual(pathsFound, True)
@@ -36,4 +38,9 @@ class testSetter(gmidTestCase):
         self.assertEqual(type(storedValue), SI, f"{storedValue}")
         self.assertEqual(storedValue, SI("1.5k"))
         self.assertEqual(setterInstance.value, SI("1.5k"))
-        
+
+    def testValueFlags(self):
+        setterInstance.initDf()
+        setterInstance.value = SI("10.0M")
+        flags = setterInstance.valueFlag
+        self.assertEqual(flags, ["OutOfBounds"])

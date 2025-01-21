@@ -1,10 +1,12 @@
 import click
 
+# TODO: Implement me!
 
-@click.command(name='vsplot')
-@click.argument('yx_header', required=True)
-@click.option('-p', '--pdf', is_flag=True, required=False, help="Outputs as a pdf." )
-@click.option('-j', '--jpeg', is_flag=True, required=False, help="Outputs as a jpeg.")
+
+@click.command(name="vsplot")
+@click.argument("yx_header", required=True)
+@click.option("-p", "--pdf", is_flag=True, required=False, help="Outputs as a pdf.")
+@click.option("-j", "--jpeg", is_flag=True, required=False, help="Outputs as a jpeg.")
 def main(*args, **kwargs):
     """Plot a header against another header.\n
     Run \'view -h\' to view all possible headers to use."""
@@ -14,3 +16,4 @@ def main(*args, **kwargs):
 
     for key, value in kwargs.items():
         click.echo(f"{key}: {value}")
+

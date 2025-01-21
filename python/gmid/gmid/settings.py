@@ -1,5 +1,3 @@
-# Before we can interpolate we need to have a valid data frame loaded
-# into the Setter. We must pull it from the set environment variables
 import os
 import pickle
 from pathlib import Path
@@ -8,12 +6,19 @@ import pandas as pd
 
 from gmid.utils.SI import SI
 
+# TODO: Currently when a path is not available, python exceptions
+# are thrown meaning incomprehesive error messages. Make sure the
+# code doesnt break when a path is not set.
 
+
+# TODO: Consider adding another method that checks whether or not
+# a valid config file is set and being used.
 class Setter:
     def __init__(self):
         self.__reset__()
         self.hasValidPath = self.initPaths()
         self.hasValidDF = self.initDf()
+
         try:
             self._header_ = self.load("Header")
         except EOFError:
@@ -22,7 +27,7 @@ class Setter:
             self._value_ = self.load("Value")
         except EOFError:
             self.value = None
-        self.valueFlag = self.getValueFlags(self._value_)
+        # self.valueFlag = self.getValueFlags(self._value_)
 
     def __reset__(self):
         self.df = None
@@ -52,6 +57,8 @@ class Setter:
             self.paths["Install"] = Path(paths[0])
             self.paths["Data"] = Path(paths[1])
             self.paths["Config"] = Path(paths[2])
+        # NOTE: Regarding the TOP TODO, this might be a potential
+        # area looking into
         return not (
             self.paths["Install"] == ""
             and self.paths["Data"] == ""
@@ -110,7 +117,7 @@ class Setter:
 
     def valueInBounds(self, value):
         ret = False
-        if self.hasValidDF:
+        if self.hasValidDF and self._header_:
             bounds = (self.df[self._header_].iloc[0], self.df[self._header_].iloc[-1])
             ret = value > bounds[0] and value < bounds[1]
         return ret

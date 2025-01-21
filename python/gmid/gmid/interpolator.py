@@ -25,11 +25,20 @@ class Interpolator:
         if self.y_header == "" or self.x_header == "":
             ret = None
         else:
+            # Check if xp and fp are increasing
+            xp_sort, fp_sort = zip(
+                *sorted(
+                    zip(
+                        setterInstance.df[self.x_header],
+                        setterInstance.df[self.y_header],
+                    )
+                )
+            )
             ret = float(
                 np.interp(
-                    setterInstance.value.equate(),
-                    setterInstance.df[self.x_header],
-                    setterInstance.df[self.y_header],
+                    x=setterInstance.value.equate(),
+                    xp=xp_sort,
+                    fp=fp_sort,
                 )
             )
         return ret

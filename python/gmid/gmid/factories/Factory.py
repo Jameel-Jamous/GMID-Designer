@@ -4,6 +4,7 @@ from gmid.factories.strategies.InterpStrategies import (
     InterpHeadStrat,
 )
 from gmid.factories.strategies.PlotStrategies import (
+    PlotAnnotatedStrat,
     PlotHeaderStrat,
     PlotHeadStrat,
     PlotJpegStrat,
@@ -56,15 +57,17 @@ class InterpFactory:
 
 class PlotFactory:
     @staticmethod
-    def create(strat: str, params):
+    def create(strat: str, params, flags=None):
         if strat == "header":
-            return PlotHeaderStrat(params)
+            return PlotHeaderStrat(params, flags)
         elif strat == "pdf":
-            return PlotPdfStrat(params)
+            return PlotPdfStrat(params, flags)
         elif strat == "jpeg":
-            return PlotJpegStrat(params)
+            return PlotJpegStrat(params, flags)
         elif strat == "head":
-            return PlotHeadStrat(params)
+            return PlotHeadStrat(params, flags)
+        elif strat == "annotated":
+            return PlotAnnotatedStrat(params, flags)
         else:
             raise ValueError("Unknown Plot Strategy Type")
 

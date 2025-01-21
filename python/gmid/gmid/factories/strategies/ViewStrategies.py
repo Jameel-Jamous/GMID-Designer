@@ -1,6 +1,8 @@
 from gmid.factories.strategies.OptionStrategy import OptionStrategy
 from gmid.settings import setterInstance
 
+# TODO: See View.py
+
 
 class ViewHeadStrat(OptionStrategy):
     def __init__(self, params):
@@ -21,10 +23,10 @@ class ViewAllHeadersStrat(OptionStrategy):
         self.headers = []
 
     def execute(self):
-        if not setterInstance.df.empty:
+        if setterInstance.df is not None:
             self.headers = setterInstance.df.columns
         else:
-            self.headers = ["None Found"]
+            self.headers = [""]
         return
 
     def print(self):

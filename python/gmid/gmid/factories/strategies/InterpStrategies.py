@@ -3,6 +3,7 @@ from gmid.interpolator import Interpolator
 from gmid.settings import setterInstance
 
 
+# TODO: Change 'setterInstance.header' to 'self.x_header'
 class InterpHeaderStrat(OptionStrategy):
     """Interpolates a single header (argument) at the set value"""
 

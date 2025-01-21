@@ -252,7 +252,6 @@ class Annotater:
         return self
 
 
-# TODO: See PlotStratigies.
 class Plotter:
     def __init__(self, xHeader, yHeader, **kwargs):
         # Store headers and options that were passed in
@@ -278,7 +277,10 @@ class Plotter:
             self.fgParams = self.cfg["figureParameters"]
             self.anParams = self.cfg["annotationParameters"]
             self.establishParams()
-            self.pltTup = plt.subplots()
+
+            # Init the plots
+            # TODO: Determine the number of subplots to make if being used
+            self.pltTup = plt.subplots(layout="constrained", figsize=(6.4, 3))
 
             # Init Annotater
             self.annotater = Annotater(
@@ -307,20 +309,32 @@ class Plotter:
         )
         return self
 
+    # TODO: Implement Me
+    def formatTo(self, format: str):
+        # make file name
+        return self
+
+    def zoom(self, xMin: float, xMax: float):
+        prevMin, prevMax = self.pltTup[1].get_xlim()
+        ymin, ymax = self.pltTup[1].get_ylim()
+        per = float((prevMax - prevMin) / (xMax - xMin))
+        self.pltTup[1].set_xlim(xmin=xMin, xmax=xMax, auto=True)
+        self.pltTup[1].set_ylim(ymin=per * ymin, ymax=per * ymax, auto=True)
+        return self
+
+    def annotate(self, xdata: float, ydata: float):
+        self.annotater.setLims(
+            xlim=self.pltTup[1].get_xlim(),
+            ylim=self.pltTup[1].get_ylim(),
+        ).annotate(xData=xdata, yData=ydata)
+        return self
+
     def plot(self):
         self.pltTup[1].plot(
             self.x_col,
             self.y_col,
             color=self.plParams["lineColor"],
         )
-
-        """
-        if self.opt["usingLog"][0]:
-            if self.opt["usingLog"][1] == "X":
-                plt.xscale("log")
-            elif self.opt["usingLog"][1] == "Y":
-                plt.yscale("log")
-        """
 
         if self.plParams["useTex"]:
             self.pltTup[1].set_xlabel(f"{self.formatHeader(self.x_header)}")
@@ -336,13 +350,6 @@ class Plotter:
         print("Close (Ctrl-C) the window to proceed.")
         #       print(plt.rcParams)
         plt.show()
-
-    def annotate(self, xdata: float, ydata: float):
-        self.annotater.setLims(
-            xlim=self.pltTup[1].get_xlim(),
-            ylim=self.pltTup[1].get_ylim(),
-        ).annotate(xData=xdata, yData=ydata)
-        return self
 
     def formatHeader(self, aHeader: str):
         aList = re.findall(r"([a-zA-z]+)Over([a-zA-z]+)", aHeader)

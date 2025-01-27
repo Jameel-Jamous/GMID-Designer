@@ -15,6 +15,13 @@ from gmid.contexts.PlotOptionContext import PlotOptionContext
 @click.command(name="plot")
 @click.argument("header", required=True)
 @click.option(
+    "-f",
+    "--figures",
+    is_flag=True,
+    required=False,
+    help="Outputs the plot as seperate figures instead of a single subplot",
+)
+@click.option(
     "-z",
     "--zoom",
     type=str,
@@ -41,6 +48,11 @@ from gmid.contexts.PlotOptionContext import PlotOptionContext
 def main(*args, **kwargs):
     """Plot a header against 'gmid'.\n
     Run \'view -h\' to view all possible header to use."""
+    context = PlotOptionContext(args, kwargs)
+    click.echo(context.execute().print())
+
+
+"""
     click.echo("It Worked")
     for item in args:
         click.echo(f"{item}")
@@ -57,3 +69,4 @@ def main(*args, **kwargs):
             click.echo(f"\t{item.print()}")
         click.echo(f"\noptions: {context.options}")
     click.echo(context.print())
+"""

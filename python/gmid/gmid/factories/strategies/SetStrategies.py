@@ -29,13 +29,14 @@ class SetHeadStrat(OptionStrategy):
 class SetValueStrat(OptionStrategy):
     def __init__(self, params):
         super().__init__()
-        self.value = None
+        self.value = SI(asFloat=10)
         self.prevVal = None
         self.prevHead = None
+
         if type(params) is str:
-            self.value = SI(str=params)
+            self.value = SI(asStr=params)
         elif type(params) is float or type(params) is int:
-            self.value = SI(float=params)
+            self.value = SI(asFloat=params)
 
     def execute(self):
         self.prevVal = setterInstance.value

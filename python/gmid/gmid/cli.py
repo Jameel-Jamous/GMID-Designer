@@ -1,15 +1,13 @@
 import click
 
-from gmid.commands import view
-from gmid.commands import setter
-from gmid.commands import interp
-from gmid.commands import plot
-from gmid.commands import vsplot
+from gmid.commands import interp, plot, setter, view, vsplot
+
 
 @click.group()
 def cli():
     """A CLI tool for performing SSI/MSI current efficiency (GMID) calculations and visualizations"""
     pass
+
 
 cli.add_command(view.main)
 cli.add_command(setter.main)

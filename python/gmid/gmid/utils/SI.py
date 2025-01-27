@@ -17,12 +17,12 @@ class SI:
     """A Class to represent floatint point numbers as
     a number using SI notation"""
 
-    def __init__(self, str=None, float=None):
+    def __init__(self, asStr=None, asFloat=None):
         self.__reset__()
-        if str is not None and float is None:
-            self.fromStr(str)
-        elif str is None and float is not None:
-            self.fromFloat(float)
+        if asStr and not asFloat:
+            self.fromStr(asStr)
+        elif not asStr and asFloat:
+            self.fromFloat(asFloat)
 
         if self.__value__ is not None and self.__siUnit__ is not None:
             self.__equated__ = self.equate()
@@ -114,6 +114,9 @@ class SI:
     def __str__(self):
         return self.toStr()
 
+    def __call__(self, value):
+        return self.__str__()
+
     ### Helpers
     def fromStr(self, aStr: str):
         valid = self.check(aStr)
@@ -145,9 +148,13 @@ class SI:
 
     def toStr(self, e_notation=False):
         if e_notation:
-            theStr = str(self.__value__) + "e" + str(supported_si[self.__siUnit__])
+            theStr = (
+                "{:.3f}".format(self.__value__)
+                + "e"
+                + str(supported_si[self.__siUnit__])
+            )
         else:
-            theStr = str(self.__value__) + self.__siUnit__
+            theStr = "{:.3f}".format(self.__value__) + self.__siUnit__
         return theStr
 
     def check(self, aStr: str):
@@ -171,4 +178,3 @@ class SI:
 
     def equate(self) -> float:
         return self.__value__ * (10 ** supported_si[self.__siUnit__])
-

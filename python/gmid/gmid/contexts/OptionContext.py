@@ -28,4 +28,3 @@ class OptionContext(ABC):
     @abstractmethod
     def toStrategy(self):
         pass
-

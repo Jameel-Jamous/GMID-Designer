@@ -5,10 +5,11 @@ from gmid.factories.strategies.InterpStrategies import (
 )
 from gmid.factories.strategies.PlotStrategies import (
     PlotAnnotatedStrat,
+    PlotFiguresStrat,
     PlotHeaderStrat,
     PlotHeadStrat,
-    PlotJpegStrat,
-    PlotPdfStrat,
+    PlotOutputAsStrat,
+    PlotZoomStrat,
 )
 from gmid.factories.strategies.SetStrategies import SetHeadStrat, SetValueStrat
 from gmid.factories.strategies.ViewStrategies import (
@@ -19,8 +20,7 @@ from gmid.factories.strategies.ViewStrategies import (
 )
 from gmid.factories.strategies.VSPlotStrategies import (
     VSPlotHeaderStrat,
-    VSPlotJpegStrat,
-    VSPlotPdfStrat,
+    VSPlotOutputAsStrat,
 )
 
 
@@ -60,29 +60,29 @@ class PlotFactory:
     def create(strat: str, params, flags=None):
         if strat == "header":
             return PlotHeaderStrat(params, flags)
-        elif strat == "pdf":
-            return PlotPdfStrat(params, flags)
-        elif strat == "jpeg":
-            return PlotJpegStrat(params, flags)
+        elif strat == "zoom":
+            return PlotZoomStrat(params, flags)
         elif strat == "head":
             return PlotHeadStrat(params, flags)
         elif strat == "annotated":
             return PlotAnnotatedStrat(params, flags)
+        elif strat == "output_as":
+            return PlotOutputAsStrat(params, flags)
+        elif strat == "figures":
+            return PlotFiguresStrat(params, flags)
         else:
-            raise ValueError("Unknown Plot Strategy Type")
+            raise ValueError(f"Unknown Plot Strategy Type: {strat}")
 
 
 class VSPlotFactory:
     @staticmethod
-    def create(strat: str, params):
-        if strat == "header":
-            return VSPlotHeaderStrat(params)
-        elif strat == "pdf":
-            return VSPlotPdfStrat(params)
-        elif strat == "jpeg":
-            return VSPlotJpegStrat(params)
+    def create(strat: str, params, flags):
+        if strat == "yx_header":
+            return VSPlotHeaderStrat(params, flags)
+        elif strat == "output_as":
+            return VSPlotOutputAsStrat(params, flags)
         else:
-            raise ValueError("Unknown VSPlot Strategy Type")
+            raise ValueError(f"Unknown VSPlot Strategy Type: {strat}")
 
 
 class SetFactory:

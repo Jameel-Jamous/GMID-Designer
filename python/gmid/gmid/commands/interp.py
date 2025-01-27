@@ -29,5 +29,4 @@ def main(*args, **kwargs):
     #            f"output: {context.output}, stratgies: {context.strategies}\noptions: {context.options}"
     #        )
 
-    context = InterpOptionContext(args, kwargs)
-    click.echo(context.execute().print())
+    InterpOptionContext(args, kwargs).execute().print()

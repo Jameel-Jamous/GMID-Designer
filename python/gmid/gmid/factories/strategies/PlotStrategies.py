@@ -1,75 +1,35 @@
 from gmid.factories.strategies.OptionStrategy import OptionStrategy
-from gmid.interpolator import Interpolator as interp
-from gmid.plotter import Plotter
-from gmid.settings import setterInstance
+from gmid.plotter import plotterInstance as PLI
+from gmid.settings import setterInstance as STI
 
 
 class PlotHeaderStrat(OptionStrategy):
     def __init__(self, params, flags):
         super().__init__()
-        self.x_header = setterInstance.header
+        self.x_header = STI.header
         self.y_header = params
-        self.flags = flags
         self.outDict = {}
-        self.thePlotter = None
 
-    def plotterWithAnnotations(self, xHeader, yHeader, xAnno, yAnno):
-        self.thePlotter = (
-            Plotter(xHeader=xHeader, yHeader=yHeader)
-            .plot()
-            .annotate(
-                xdata=xAnno, ydata=interp(xHeader=xHeader, yHeader=yHeader).execute()
-            )
-        )
-        return self
-
-    def execute(self, holdOn=False):
-        stop = holdOn
-        # Check if the y header is in the data frame
-        if self.y_header in setterInstance.df.columns:
-            # Check if we need to make an annotated plot
-            if "annotated" in self.flags:
-                yAtX = interp(xHeader=self.x_header, yHeader=self.y_header).execute()
-                self.plotterWithAnnotations(
-                    xHeader=self.x_header,
-                    yHeader=self.y_header,
-                    xAnno=setterInstance.value.equate(),
-                    yAnno=yAtX,
-                )
+    def execute(self):
+        if self.x_header in STI.df.columns and (
+            self.y_header in STI.df.columns or self.y_header == "all"
+        ):
+            if self.y_header != "all":
+                PLI.x_header = self.x_header
+                PLI.y_headers.append(self.y_header)
+                PLI.numOfPlots += 1
+                self.outDict = {f"{self.y_header}": True}
+            elif self.y_header == "all":
+                temp = [item for item in STI.df.columns if item != STI.header]
+                self.outDict = PlotHeadStrat(params=temp, flags=None).execute()
             else:
-                self.thePlotter = Plotter(
-                    xHeader=setterInstance.header, yHeader=self.y_header
-                ).plot()
-        # Otherwise, check if the yheader is the 'all' header
-        elif self.y_header == "all":
-            temp = [
-                item
-                for item in setterInstance.df.columns
-                if item != setterInstance.header
-            ]
-            temp2 = PlotHeadStrat(temp, self.flags)
-            self.outDict = temp2.execute()
-            temp2.thePlotter.show()
-        # Otherwise check if the yheader is the 'pass' header
-        elif self.y_header != "pass":
-            self.outDict[self.y_header] = False
-        # Otherwise, could not make plot and function has failed
+                self.outDict = {f"{self.y_header}": False}
         else:
-            self.outDict[self.y_header] = False
-
-        # Determine if it needs to return self (to be reused) or if returning complete flag
-        if not stop:
-            self.outDict[self.y_header] = True
-            ret = self.outDict
-            if self.thePlotter is not None:
-                self.thePlotter.show()
-        else:
-            ret = self
-
-        return ret
+            self.outDict = {f"{self.y_header}": False}
+        return self.outDict
 
     def print(self):
-        return f"<Header> : {self.y_header}, {self.flags}, {self.outDict}, {self.thePlotter}"
+        return f"<Header> : {self.y_header}, {self.outDict}"
 
 
 class PlotHeadStrat(OptionStrategy):
@@ -81,42 +41,67 @@ class PlotHeadStrat(OptionStrategy):
         self.thePlotter = None
 
     def execute(self):
+        PLI.x_header = STI.header
         for item in self.headers:
-            temp = PlotHeaderStrat(item, self.flags).execute(holdOn=True)
-        if len(self.headers) != 1:
-            temp.y_header = "pass"
-            self.thePlotter = temp.thePlotter
+            if item in STI.df.columns:
+                PLI.y_headers.append(item)
+                self.outDict.update({f"{item}": True})
+            else:
+                self.outDict.update({f"{item}": False})
+        PLI.numOfPlots += len(self.headers)
         return self.outDict
 
     def print(self):
-        return f"<Head> : {self.headers}, {self.flags}, {self.thePlotter}"
+        return f"<Head> : {self.headers}, {self.flags}"
 
 
 class PlotAnnotatedStrat(OptionStrategy):
     def __init__(self, params, flags=None):
         super().__init__()
-        self.wasSet = True
 
     def execute(self):
+        PLI.options.update({"annotate": True})
         return {}
 
     def print(self):
-        return f"<Annotate> : {self.wasSet}"
+        return f"<Annotate> : {None}"
 
 
-# TODO: Consider Merging/Implementing these on the other two strategies.
-# Use the factory to do so.
-class PlotPdfStrat(OptionStrategy):
+class PlotZoomStrat(OptionStrategy):
     def __init__(self, params, flags=None):
         super().__init__()
-        self.wasSet = True
+        if type(params) is str:
+            f1, f2 = params.split(":")
+        self.range = (float(f1), float(f2))
 
     def execute(self):
+        PLI.options.update({"zoom": self.range})
         return {}
 
     def print(self):
-        return f"<pdf> : {self.wasSet}"
+        return f"<zoom> : {self.range}"
 
 
-class PlotJpegStrat(OptionStrategy):
-    pass
+class PlotOutputAsStrat(OptionStrategy):
+    def __init__(self, params, flags=None):
+        super().__init__()
+        self.format = params
+
+    def execute(self):
+        PLI.options.update({"output_as": self.format})
+        return {}
+
+    def print(self):
+        return f"<output_as> : {self.format}"
+
+
+class PlotFiguresStrat(OptionStrategy):
+    def __init__(self, params, flags=None):
+        super().__init__()
+
+    def execute(self):
+        PLI.options.update({"figures": True})
+        return {}
+
+    def print(self):
+        return f"<figures> : {None}"

@@ -21,13 +21,16 @@ class Setter:
 
         try:
             self._header_ = self.load("Header")
+            if not self._header_:
+                self.header = "gmid"
         except EOFError:
             self.header = "gmid"
         try:
             self._value_ = self.load("Value")
+            if not self._value_:
+                self.value = SI(asFloat=10)
         except EOFError:
-            self.value = None
-        # self.valueFlag = self.getValueFlags(self._value_)
+            self.value = SI(asFloat=10)
 
     def __reset__(self):
         self.df = None
@@ -39,6 +42,7 @@ class Setter:
             "Install": "",
             "Data": "",
             "Config": "",
+            "Output": "",
         }
         self.hasValidDF = False
         self.hasValidDF = False
@@ -49,20 +53,24 @@ class Setter:
             delim = ":"
         else:
             delim = ";"
+
         paths = os.getenv("GMID_PATHS")
         if paths is None:
             raise FileNotFoundError
         else:
             paths = paths.split(delim)
-            self.paths["Install"] = Path(paths[0])
-            self.paths["Data"] = Path(paths[1])
-            self.paths["Config"] = Path(paths[2])
-        # NOTE: Regarding the TOP TODO, this might be a potential
-        # area looking into
+            if len(paths) != 4:
+                raise FileNotFoundError
+            else:
+                self.paths["Install"] = Path(paths[0])
+                self.paths["Data"] = Path(paths[1])
+                self.paths["Config"] = Path(paths[2])
+                self.paths["Output"] = Path(paths[3])
         return not (
             self.paths["Install"] == ""
             and self.paths["Data"] == ""
             and self.paths["Config"] == ""
+            and self.paths["Output"] == ""
         )
 
     def initDf(self):
@@ -86,6 +94,8 @@ class Setter:
         if aHeader in self.df.columns:
             with open(self.paths["Install"] / "pkl" / "header.pkl", "wb") as file:
                 pickle.dump(aHeader, file)
+        else:
+            self._header_ = "gmid"
 
     @property
     def value(self) -> SI:
@@ -96,8 +106,8 @@ class Setter:
         with open(self.paths["Install"] / "pkl" / "value.pkl", "wb") as file:
             pickle.dump(aValue, file)
         self._value_ = aValue
-        self.valueFlag = []
-        self.valueFlag = self.getValueFlags(aValue)
+        if not self._value_:
+            self._value_ = SI(asFloat=10)
 
     def load(self, what: str):
         temp = None
@@ -119,6 +129,7 @@ class Setter:
         ret = False
         if self.hasValidDF and self._header_:
             bounds = (self.df[self._header_].iloc[0], self.df[self._header_].iloc[-1])
+            print(bounds)
             ret = value > bounds[0] and value < bounds[1]
         return ret
 

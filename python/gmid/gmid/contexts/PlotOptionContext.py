@@ -1,5 +1,6 @@
 from gmid.contexts.OptionContext import OptionContext
 from gmid.factories.Factory import MainFactory
+from gmid.plotter import plotterInstance
 
 
 class PlotOptionContext(OptionContext):
@@ -17,6 +18,8 @@ class PlotOptionContext(OptionContext):
             self.append(
                 MainFactory.create("Plot").create(strat, params, flags=self.getFlags())
             )
+        # Pass the options to the plotter instance
+        plotterInstance.options = self.options
 
     def getFlags(self):
         temp = []
@@ -29,6 +32,7 @@ class PlotOptionContext(OptionContext):
         if not self.isEmpty():
             for item in self.strategies:
                 self.output.append(item.execute())
+        plotterInstance.plot().show()
         return self
 
     def print(self):

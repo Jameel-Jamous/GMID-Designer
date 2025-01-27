@@ -15,16 +15,9 @@
   },
   "figureParameters": {
     "layoutEngine": "constrained",
-    "subFigSizeX": 6.4,
-    "subFigSizeY": 3.0,
-    "singleFigSizeX": 6.4,
-    "singleFigSizeY": 4.8,
-    "bboxInches": "tight",
-    "transparent": false,
-    "DPI": "100",
-    "padInch": 0.1,
-    "faceColor": "auto",
-    "edgeColor": "auto"
+    "figSizeX": 6.4,
+    "figSizeY": 4.8,
+    "DPI": 100
   },
   "annotationParameters": {
     "lineWidth": 3,

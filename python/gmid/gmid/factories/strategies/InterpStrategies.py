@@ -1,4 +1,5 @@
 from gmid.factories.strategies.OptionStrategy import OptionStrategy
+from gmid.factories.strategies.PlotStrategies import PlotAnnotatedStrat, PlotHeadStrat
 from gmid.interpolator import Interpolator
 from gmid.settings import setterInstance
 
@@ -59,9 +60,12 @@ class InterpAnnotateStrat(OptionStrategy):
 
     def __init__(self, params):
         super().__init__()
+        self.params = params
 
     def execute(self):
-        return
+        PlotAnnotatedStrat({}, {}).execute()
+        PlotHeadStrat(self.params, {}).execute()
+        return {}
 
     def print(self):
         return ""

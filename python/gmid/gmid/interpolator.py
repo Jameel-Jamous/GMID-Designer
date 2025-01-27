@@ -1,7 +1,6 @@
 import numpy as np
 
 from gmid.settings import setterInstance
-from gmid.utils.SI import SI
 
 
 class Interpolator:

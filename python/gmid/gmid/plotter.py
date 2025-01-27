@@ -1,9 +1,12 @@
 import json
+import math
 import re
+from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import pyplot as plt
 
+from gmid.interpolator import Interpolator as interp
 from gmid.settings import setterInstance
 
 # TODO: l is used for inductance(H) and length (m). How implement?
@@ -37,14 +40,14 @@ supported_symbols = {  # Deliminter Symbols
 class Annotater:
     """Creates Annotation in Optimum Quadrant"""
 
-    def __init__(self, x_col, y_col, cfg, ylim=None, xlim=None):
+    def __init__(self, x_col, y_col, cfg, ax, ylim=None, xlim=None):
         self.__reset__()
         self.x_col = x_col
         self.y_col = y_col
         self.cfg = cfg
         self.ylim = ylim
         self.xlim = xlim
-
+        self.ax = ax
         self.prec = self.cfg["precision"]
 
     def __reset__(self):
@@ -83,9 +86,9 @@ class Annotater:
         """Adds the annotation to current plt. The main entry point"""
         xPos, yPos = self.getPos(xData, yData)
         halign, valign = self.getAlign()
-        print(xPos, yPos)
-        print(self.dx(), self.dy())
-        plt.axvline(
+        #print(xPos, yPos)
+        #print(self.dx(), self.dy())
+        self.ax.axvline(
             x=xData,
             ymin=0,
             ymax=1,
@@ -94,7 +97,7 @@ class Annotater:
             linewidth=self.cfg["lineWidth"],
             marker="None",
         )
-        plt.axhline(
+        self.ax.axhline(
             y=yData,
             xmin=0,
             xmax=1,
@@ -104,7 +107,7 @@ class Annotater:
             marker="None",
         )
 
-        plt.text(
+        self.ax.text(
             x=xPos,
             y=yPos,
             s=f"({self.format(xData)},{self.format(yData)})",
@@ -118,7 +121,7 @@ class Annotater:
 
     def initDicts(self, xData, xmin, xmax, yData, ymin, ymax):
         """Initializes the decision dicts"""
-        # Compute Areas
+        # CompuFe Areas
         areasOfEachQuad = {
             1: abs(xmax - xData) * abs(ymax - yData),
             2: abs(xData - xmin) * abs(ymax - yData),
@@ -215,7 +218,7 @@ class Annotater:
             bestQuad = list(ofLargestAndLeastQuad)[0]
 
         self.usingQuad = bestQuad
-        print(f"{bestQuad} : {yData}")
+        #print(f"{bestQuad} : {yData}")
         return bestQuad
 
     def computeAdjustments(self, x, y):
@@ -225,7 +228,7 @@ class Annotater:
 
     def getPos(self, xData, yData):
         xAdj, yAdj = self.computeAdjustments(xData, yData)
-        print(xAdj, yAdj)
+        #print(xAdj, yAdj)
         mapping = {
             1: (
                 xData + xAdj,
@@ -253,43 +256,33 @@ class Annotater:
 
 
 class Plotter:
-    def __init__(self, xHeader, yHeader, **kwargs):
-        # Store headers and options that were passed in
+    def __init__(self, xHeader=None, yHeader=None, **kwargs):
         self.x_header = xHeader
-        self.y_header = yHeader
-        self.opt = dict(kwargs)
-        # FIXME: THIS IS A TEMPORARY FIX!
-        # To fix: Change ALL instances of 'gmid' to 'gmOverid'
-        if xHeader == "gmid":
-            self.x_header = "gmOverID"
-        if yHeader == "gmid":
-            self.y_header = "gmOverID"
+        self.y_headers = []
+        self.options = dict(kwargs)
+        self.flags = {}
 
-        if xHeader != "all":
-            # Store the data needed from the df
-            self.x_col = setterInstance.df[xHeader]
-            self.y_col = setterInstance.df[yHeader]
+        if setterInstance.paths["Config"]:
+            self.__loadConfig__(setterInstance.paths["Config"])
+        else:
+            self.flags["Config"] = False
 
-            # Read the .json file to establish corresponding configs
-            with open(setterInstance.paths["Config"], "r") as file:
-                self.cfg = json.load(file)
-            self.plParams = self.cfg["plotParameters"]
-            self.fgParams = self.cfg["figureParameters"]
-            self.anParams = self.cfg["annotationParameters"]
-            self.establishParams()
+        self._numOfPlots_ = 0
+        self._pltTup_ = ()
 
-            # Init the plots
-            # TODO: Determine the number of subplots to make if being used
-            self.pltTup = plt.subplots(layout="constrained", figsize=(6.4, 3))
+    def __process__(self, someOptions):
+        return someOptions
 
-            # Init Annotater
-            self.annotater = Annotater(
-                x_col=self.x_col,
-                y_col=self.y_col,
-                cfg=self.anParams,
-            )
+    def __loadConfig__(self, aPath):
+        with open(aPath, "r") as file:
+            self.cfg = json.load(file)
+        self.plParams = self.cfg["plotParameters"]
+        self.fgParams = self.cfg["figureParameters"]
+        self.anParams = self.cfg["annotationParameters"]
+        self.__establishParams__()
+        self.flags["Config"] = True
 
-    def establishParams(self):
+    def __establishParams__(self):
         plt.rcParams.update(
             {
                 "lines.linewidth": self.plParams["lineWidth"],
@@ -309,47 +302,188 @@ class Plotter:
         )
         return self
 
-    # TODO: Implement Me
+    @property
+    def numOfPlots(self):
+        return self._numOfPlots_
+
+    @numOfPlots.setter
+    def numOfPlots(self, num):
+        self._numOfPlots_ = num
+
+    @property
+    def xHeader(self):
+        return self.x_header
+
+    @xHeader.setter
+    def xHeader(self, aHeader: str):
+        if aHeader == "gmid":
+            self.x_header = "gmOverID"
+        elif aHeader is None or aHeader not in setterInstance.df.columns:
+            self.x_header = aHeader
+        elif aHeader == "all":
+            self.flags["all"] = True
+            self.x_header = aHeader
+        else:
+            self.x_header = aHeader
+
+    @property
+    def yHeaders(self):
+        return self.y_headers
+
+    @yHeaders.setter
+    def yHeaders(self, someHdr):
+        if all(hdrs in someHdr for hdrs in setterInstance.df.columns):
+            self.y_headers = someHdr
+        else:
+            self.y_headers = []
+
+    def append(self, aHeader):
+        if aHeader == "gmid":
+            self.flags["yHeader"] = True
+            self.y_headers.append("gmOverID")
+        elif aHeader is None or aHeader not in setterInstance.df.columns:
+            self.flags.update({"yHeader": False})
+        else:
+            self.flags["yHeader"] = True
+            self.y_headers.append(aHeader)
+
+    @property
+    def xData(self):
+        return self.x_col
+
+    @xData.setter
+    def xData(self, theData: []):
+        self.x_col = theData
+
+    @property
+    def yData(self):
+        return self.x_col
+
+    @yData.setter
+    def yData(self, theData: []):
+        self.y_col = theData
+
+    def __saveAs__(self, filename, format):
+        plt.savefig(filename.with_suffix(f".{format}"), format=f"{format}")
+        print(f"Plot saved as: {filename}.{format}")
+
     def formatTo(self, format: str):
-        # make file name
+        if "figures" in self.options:
+            for yHdr in self.y_headers:
+                filename = setterInstance.paths["Output"] / Path(
+                    f"{yHdr}VS{self.x_header}"
+                )
+                self.__saveAs__(filename, format)
+        else:
+            filename = setterInstance.paths["Output"] / Path("Output")
+            self.__saveAs__(filename, format)
+        print("Done.")
+
         return self
 
-    def zoom(self, xMin: float, xMax: float):
-        prevMin, prevMax = self.pltTup[1].get_xlim()
-        ymin, ymax = self.pltTup[1].get_ylim()
-        per = float((prevMax - prevMin) / (xMax - xMin))
-        self.pltTup[1].set_xlim(xmin=xMin, xmax=xMax, auto=True)
-        self.pltTup[1].set_ylim(ymin=per * ymin, ymax=per * ymax, auto=True)
+    def zoom(self, ax, xMin: float, xMax: float):
+        prevMin, prevMax = ax.get_xlim()
+        ymin, ymax = ax.get_ylim()
+        per = float((xMax - xMin) / (prevMax - prevMin))
+        newX = (xMin, xMax)
+        newY = (per * ymin, per * ymax)
+        #print(f"precentage : {per}")
+        return [newX, newY]
+
+    def annotate(self, ax, yHdr):
+        Annotater(
+            x_col=setterInstance.df[self.x_header],
+            y_col=setterInstance.df[yHdr],
+            cfg=self.anParams,
+            ax=ax,
+        ).setLims(
+            xlim=ax.get_xlim(),
+            ylim=ax.get_ylim(),
+        ).annotate(
+            xData=setterInstance.value.equate(),
+            yData=interp(xHeader=self.x_header, yHeader=yHdr).execute(),
+        )
         return self
 
-    def annotate(self, xdata: float, ydata: float):
-        self.annotater.setLims(
-            xlim=self.pltTup[1].get_xlim(),
-            ylim=self.pltTup[1].get_ylim(),
-        ).annotate(xData=xdata, yData=ydata)
-        return self
+    def increment(self):
+        self._numOfPlots_ += 1
 
-    def plot(self):
-        self.pltTup[1].plot(
-            self.x_col,
-            self.y_col,
+    def _computeLayout_(self):
+        if "figures" not in self.options and self.numOfPlots > 1:
+            # Fix to two plots per row and n cols
+            ncols = 2
+            nrows = math.ceil((self.numOfPlots / ncols))
+        else:
+            nrows = 1
+            ncols = 1
+
+        return int(nrows), int(ncols)
+
+    def _plotting_(self, ax, yHdr):
+        ax.plot(
+            setterInstance.df[self.x_header],
+            setterInstance.df[yHdr],
             color=self.plParams["lineColor"],
         )
 
+        if "zoom" in self.options:
+            newLim = self.zoom(ax, self.options["zoom"][0], self.options["zoom"][1])
+            ax.set_xlim(newLim[0][0], newLim[0][1], auto=True)
+            ax.set_ylim(newLim[1][0], newLim[1][1], auto=True)
+
+        if "annotate" in self.options:
+            self.annotate(ax, yHdr)
+
         if self.plParams["useTex"]:
-            self.pltTup[1].set_xlabel(f"{self.formatHeader(self.x_header)}")
-            self.pltTup[1].set_ylabel(f"{self.formatHeader(self.y_header)}")
+            if self.x_header == "gmid":
+                temp = "gmOverID"
+            else:
+                temp = self.x_header
+
+            if yHdr == "gmid":
+                temp2 = "gmOverID"
+            else:
+                temp2 = yHdr
+
+            ax.set_xlabel(f"{self.formatHeader(temp)}")
+            ax.set_ylabel(f"{self.formatHeader(temp2)}")
         else:
-            self.pltTup[1].set_xlabel(f"{self.x_header}")
-            self.pltTup[1].set_ylabel(f"{self.y_header}")
+            ax.set_xlabel(f"{self.x_header}")
+            ax.set_ylabel(f"{yHdr}")
+
+    def plot(self):
+        if "figures" in self.options:
+            for yHdr in self.y_headers:
+                fig = plt.figure(
+                    figsize=(self.fgParams["figSizeX"], self.fgParams["figSizeY"]),
+                    dpi=self.fgParams["DPI"],
+                    layout=self.fgParams["layoutEngine"],
+                )
+                ax = plt.gca()
+                self._plotting_(ax, yHdr)
+        else:
+            fig = plt.figure(
+                figsize=(self.fgParams["figSizeX"], self.fgParams["figSizeY"]),
+                dpi=float(self.fgParams["DPI"]),
+                layout=self.fgParams["layoutEngine"],
+            )
+            nrows, ncols = self._computeLayout_()
+            for idx, yHdr in enumerate(self.y_headers):
+                if idx == self.numOfPlots - 1 and self.numOfPlots % 2 == 1:
+                    ax = fig.add_subplot(nrows, ncols, (idx + 1, idx + 2))
+                else:
+                    ax = fig.add_subplot(nrows, ncols, idx + 1)
+                self._plotting_(ax, yHdr)
 
         return self
 
     def show(self):
-        print(f"Displaying '{self.y_header}' vs. '{self.x_header}'")
+        print(f"Displaying '{self.y_headers}' vs. '{self.x_header}'")
         print("Close (Ctrl-C) the window to proceed.")
-        #       print(plt.rcParams)
-        plt.show()
+        if "output_as" in self.options:
+            self.formatTo(self.options["output_as"])
+        else:
+            plt.show()
 
     def formatHeader(self, aHeader: str):
         aList = re.findall(r"([a-zA-z]+)Over([a-zA-z]+)", aHeader)
@@ -381,3 +515,6 @@ class Plotter:
             outstr += supported_units[item]
         outstr += "]"
         return outstr
+
+
+plotterInstance = Plotter()

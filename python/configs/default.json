@@ -1,0 +1,32 @@
+{
+	"configName": "default",
+	"plotParameters": {
+		"lineWidth": 2,
+		"lineColor": "k",
+		"lineStyle": "-",
+		"markColor": "k",
+		"markStyle": "o",
+		"markSize": 6,
+		"useTex": true,
+		"fontFamily": "monospace",
+		"fontSize": 16,
+		"labelSize": 20,
+		"tickLabelSize": 14
+	},
+	"figureParameters": {
+		"layoutEngine": "constrained",
+		"figSizeX": 6.4,
+		"figSizeY": 4.8,
+		"DPI": 100
+	},
+	"annotationParameters": {
+		"lineWidth": 3,
+		"lineColor": "r",
+		"lineStyle": "-",
+		"xSpace": 0.025,
+		"ySpace": 0.075,
+		"fontFamily": "monospace",
+		"fontSize": 16,
+		"precision": 4
+	}
+}

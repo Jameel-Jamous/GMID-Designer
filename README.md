@@ -1,142 +1,110 @@
 # GMID-Designer
 
-A tool intended for determining sizings for intial designs for analog SSI, MSI and even LSI and VLSI utilizing $g_m/I_D$ design methodology.
+A tool intended for determining sizings for intial designs for analog SSI utilizing $g_m/I_D$ design methodology.
 
 ## What is $g_m/I_D$ Design Methodology?
 
 $g_m/I_D$ Design Methodology is a technique often used by designers to get an idea of how to size transistors for thier applications.
 
+TO DO: Elaborate more and cater to the repo
+
+If you would like to know more the following is a pretty good paper to read: [A Basic Introduction to the gm-id Based Design Methodology](https://picture.iczhiku.com/resource/eetop/SHITwppaOwepYMBX.pdf) 
+
 ## Installation
 
-To install this you would need to do... TO DO: How do we install this?
+TO DO: Provide installation instructions
+
+```text
+export GMID_INSTALL_PATH=<path-to-python>
+export GMID_DATA_PATH=<path-to-your-data>/example_data.csv
+export GMID_CONFIG_PATH=<path-to-your-config>/example_config.json
+export GMID_OUTPUT_PATH=<path-to-place-your-output>
+export GMID_PATHS=$GMID_INSTALL_PATH:$GMID_DATA_PATH:$GMID_CONFIG_PATH:$GMID_OUTPUT_PATH
+```
+
+After paths are established, you can verify that the tool is using them by running the following commands:
+```text
+gmid view
+```
 
 ## Getting Started
 
-### Formating your Data for gmidDesigner
+### Preparing your Data for GMID-Designer
 
-Before one can fully utilize the power of this solver, we need to make sure that the data is listed as follows:
-
-```text
-vov gmoverid gmoverid jd ... gmoverid variable_you_want_to_capture
-```
-
-### Loading Data
-
-Before one can fully utilize power of this solver, we need to give it technology data. Provided in the source code within the `sample_data` directory is the technology data for the Google/Sky130nm process. To load this data, you can execute:
+Before one can fully utilize the tool, we need to make sure that the header line of your data formatted in a certain way:
 
 ```text
-load $PATH_TO_NMOS_DATA $PATH_TO_PMOS_DATA
+vov gmoverid jd ... cdsovercgs variable_you_want_to_capture
 ```
 
-**NOTE**: The SKY130 PDK displays some non-ideal/realistic $g_m/I_D$ plots for the PMOS process. Keep this in mind when designing/using this tool.
+Remember you need to set the `GMID_DATA_PATH` to point to your data. Also, note that the way the headers are formatted will be the way they are formatted on the plots.     
 
-### Plotting/Visualizing Data
+### Setting the Design Header
 
-Often you might want to get an idea of what the solver is working with. You can view plots using the following command
+By default, the design header is `gmid`. You can establish the value to be visualized by running the following command:
 
 ```text
-plot vov gmoverid NMOS
+gmid set 10
 ```
 
-Suppose if you wanted to view this plot for a PMOS instead. You can execute the following command:
+You can also set the design header to be any other header provided in your data. Use the following as an example:
 
 ```text
-plot vov gmoverid PMOS
+gmid set 10 -h vov
+gmid set 10 --head vov
 ```
 
-Suppose if you wanted create a plot for all variables. You can execute the following command:
+### Interpolation
+
+Often you might just want an idea of what the values are at that $g_m/I_D$ values. You can do so running the following command
+after you have already `set` the header:
 
 ```text
-plot all PMOS
+gmid interp vov
 ```
 
-Suppose you wanted to save this plot. You can execute the following command:
+The output should look like:
 
 ```text
-plot vov gmoverid PMOS >> $PATH_TO_SAVE
+For 'gmid' = 10.0:
+  'vov' = 1.232
 ```
 
-If a filename ending in a valid extension, it will save as a `pdf` under the following naming scheme `Yydata.Xxdata.pdf`:
+Note that you cannot interpolate the set value with the set header:
 
 ```text
-plot vov gmoverid PMOS >> ./example_path/
+gmid interp cdsovercgs   # Valid Syntax
+gmid interp gmid         # Invalid Syntax!
 ```
 
-This would output:
+TO DO: Explain batch mode
+
+### Plotting
+
+To view a plot of the set header with respect to another header you can execute the following command:
 
 ```text
-Plot saved as ./example_path/Ygmoverid.Xvov.pdf
+gmid plot vov
 ```
 
-Suppose instead you would like to know all the parameters associated with a specific gmid value. You can do this with the following command:
+If you are using the default configuration for the tool, your output should look like:
+
+You can also view a plot that is with respect to all of the other headers by using `all`., running the following command should produce the following figure.
+`all` is an internal header that is only used by the tool and should not be set in header line of your data. 
 
 ```text
-NMOS @ gmid 10
+gmid plot all
 ```
 
-This should output the following:
+#### Plot Annotations
 
+You can also add annotations to your plots by doing the following:
 ```text
-jd 22.5 gmovergds 15.5 ...
+gmid plot all --annotated
 ```
+If you are using the default configuration for the tool, your output should look like:
 
-Suppose instead you like to know at what $g_m/I_D$, produces a certain $J_D$. You can execute:
+#### Versus Plotting
 
-```text
-NMOS @ jd 22.5
-```
+TO DO: Talk about `VSPLOT` command.
 
-This should output the following:
-
-```text
-vov 0.1 gmoverid 10 gmovergds 15 ...
-```
-
-You can pipe the output of any function to a file if you would like with `>>` operator:
-
-```text
-NMOS @ gmid 10 >> $PATH_TO_FILE
-```
-
-### Sizing from Data
-
-Suppose you would like to determine the size of the transistor. As mentioned before mentioned, you would need a drain-source current specification or to determine the width. Using this current, we can divide it by the current density to determine the appropiate sizing:
-$$
-W=\frac{I_{DS}}{J_{DS}}
-$$
-To do this uwing gmidDesigner, you can execute the following:
-
-```text
-size NMOS @ gmid 10 id 50u
-```
-
-This should output the following:
-
-```text
-W = 2.2222u
-```
-
-Suppose you would like this width in terms of a unit width $U$, where $U=2.2\ \mu\text{m}$:
-
-```text
-size NMOS @ gmid 10 id 100u unit U = 2.2u
-```
-
-This should output the following:
-
-```text
-nf = 2 W = 2U
-```
-
-Suppose you would like this width in terms of a unit width $U$, where $U=2.2\ \mu\text{m}$:
-
-```text
-U = 2.2u # Create a variable for the unit width
-size NMOS @ gmid 10 id 75u unit U
-```
-
-This should output the following:
-
-```text
-nf = 3 W = 2.6666U
-```

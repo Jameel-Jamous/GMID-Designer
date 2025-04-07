@@ -12,6 +12,8 @@ If you would like to know more the following is a pretty good paper to read: [A 
 
 ## Installation
 
+*Disclaimer:* Currently only a prototyped version of the tool is deployed and working. A more performant version in `C++` will be made in the near future.
+
 TO DO: Provide installation instructions
 
 ```text
@@ -102,11 +104,15 @@ gmid plot all
 
 You can also add annotations to your plots by doing the following:
 ```text
-gmid plot all --annotated
+gmid plot vov --annotated
 ```
 If you are using the default configuration for the tool, your output should look like:
 
 ![Single plot annotated](./imgs/sample_plot2.png)
+
+The annotation feature also works with plots against `all`:
+
+![All Plot Annotated](./imgs/sample_plot3.png)
 
 #### Versus Plotting
 

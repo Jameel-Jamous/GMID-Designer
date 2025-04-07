@@ -12,7 +12,7 @@ the **current density ($I_D/W$)**. Since designers often have a target **drain c
 and determine the actual transistor width.
 
 While powerful, this approach involves working with a large amounts of data and plots, thus making manual iterations through plots and interpolations quite tedious and laborious.
-This is where **GMID-Designer** comes in: it streamlines the process by letting you visualize and explore all relevant data in one place. 
+This is where **GMID-Designer** comes in: it streamlines the process by letting you visualize and explore all relevant data in one interface. 
 
 For more about the methodology itself, check out this neat article: [A Basic Introduction to the gm-id Based Design Methodology](https://picture.iczhiku.com/resource/eetop/SHITwppaOwepYMBX.pdf) 
 

@@ -39,7 +39,9 @@ Before one can fully utilize the tool, we need to make sure that the header line
 vov gmoverid jd ... cdsovercgs variable_you_want_to_capture
 ```
 
-Remember you need to set the `GMID_DATA_PATH` to point to your data. Also, note that the way the headers are formatted will be the way they are formatted on the plots.     
+Remember you need to set the `GMID_DATA_PATH` to point to your data. Also, note that the way the headers are formatted will be the way they are formatted on the plots.
+
+> NOTE: All data used from this example is from `./python/sample_data/nmos.csv` which is data obatined from the open source SKY130 PDK.
 
 ### Setting the Design Header
 
@@ -99,6 +101,9 @@ You can also view a plot that is with respect to all of the other headers by usi
 ```text
 gmid plot all
 ```
+If you are using the default configuration for the tool, your output should look like:
+
+![All Plot](./imgs/sample_plot4.png)
 
 #### Plot Annotations
 

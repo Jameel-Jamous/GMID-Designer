@@ -89,6 +89,8 @@ gmid plot vov
 
 If you are using the default configuration for the tool, your output should look like:
 
+![Single Plot Data](./imgs/sample_plot1.png)
+
 You can also view a plot that is with respect to all of the other headers by using `all`., running the following command should produce the following figure.
 `all` is an internal header that is only used by the tool and should not be set in header line of your data. 
 
@@ -103,6 +105,8 @@ You can also add annotations to your plots by doing the following:
 gmid plot all --annotated
 ```
 If you are using the default configuration for the tool, your output should look like:
+
+![Single plot annotated](./imgs/sample_plot2.png)
 
 #### Versus Plotting
 

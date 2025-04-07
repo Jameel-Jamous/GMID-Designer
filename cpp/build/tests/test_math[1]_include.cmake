@@ -1,0 +1,5 @@
+if(EXISTS "/home/jam/Desktop/GMID-Designer/cpp/build/tests/test_math[1]_tests.cmake")
+  include("/home/jam/Desktop/GMID-Designer/cpp/build/tests/test_math[1]_tests.cmake")
+else()
+  add_test(test_math_NOT_BUILT test_math_NOT_BUILT)
+endif()

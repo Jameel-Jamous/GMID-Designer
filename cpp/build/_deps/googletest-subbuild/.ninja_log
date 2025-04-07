@@ -1,0 +1,21 @@
+# ninja log v6
+1	21	1743252541077789243	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-mkdir	6338ca6335aab2ed
+1	21	1743252541077789243	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-mkdir	6338ca6335aab2ed
+21	1775	1743252542831806469	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-download	7833cb691429dccf
+21	1775	1743252542831806469	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-download	7833cb691429dccf
+1775	1793	1743252542849806646	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-update	fc58747b2e0acf39
+1775	1793	1743252542849806646	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-update	fc58747b2e0acf39
+1793	1811	1743252542867806823	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-patch	ec0e7dd51da72815
+1793	1811	1743252542867806823	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-patch	ec0e7dd51da72815
+1811	1828	1743252542884806989	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-configure	28df579944719624
+1811	1828	1743252542884806989	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-configure	28df579944719624
+1828	1846	1743252542902807166	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-build	3177a0e5bd6f19d6
+1828	1846	1743252542902807166	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-build	3177a0e5bd6f19d6
+1846	1863	1743252542920807343	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-install	a4f1b824f24ddf77
+1846	1863	1743252542920807343	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-install	a4f1b824f24ddf77
+1864	1881	1743252542937807510	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-test	78f0e551e67e1b09
+1864	1881	1743252542937807510	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-test	78f0e551e67e1b09
+1881	1909	1743252542965807785	CMakeFiles/googletest-populate-complete	3185aad631185ba5
+1881	1909	1743252542965807785	googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-done	3185aad631185ba5
+1881	1909	1743252542965807785	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/CMakeFiles/googletest-populate-complete	3185aad631185ba5
+1881	1909	1743252542965807785	/home/jam/Desktop/GMID-Designer/cpp/build/_deps/googletest-subbuild/googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-done	3185aad631185ba5

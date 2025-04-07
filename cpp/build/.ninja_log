@@ -1,0 +1,17 @@
+# ninja log v6
+2	26	1743252543484118267	src/CMakeFiles/mymath.dir/math.cpp.o	cd16d030e179bdc0
+26	70	1743252543507942565	src/libmymath.a	623fba2c4bfaf345
+3	365	1743252543485014242	src/CMakeFiles/myapp.dir/main.cpp.o	4ccba367de50880f
+366	428	1743252543846816439	bin/myapp	a2bfe6c7946fef3b
+3	1169	1743252543485234549	tests/CMakeFiles/test_math.dir/test_math.cpp.o	e2fa7d3ffa44a47c
+3	1194	1743252543484678453	_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o	c8d32272dade2978
+4	1518	1743252543485551410	_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o	265a6a832c6aa2bd
+2	2237	1743252543484383839	_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o	7f639491529dcb6b
+2	4254	1743252543482812863	_deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o	718d92d2f0bc1b18
+4255	4346	1743252547735854640	lib/libgtest.a	e21429778cf18d0f
+4346	4388	1743252547828324268	lib/libgtest_main.a	30ececf4ed42069a
+4346	4409	1743252547826855534	lib/libgmock.a	aed9b9110c6e7301
+4409	4443	1743252547889856152	lib/libgmock_main.a	685aef476c43eaae
+4388	4509	1743252547988857125	bin/test_math	b9737936fe9f508
+4388	4509	1743252547988857125	tests/test_math[1]_tests.cmake	b9737936fe9f508
+4388	4509	1743252547988857125	/home/jam/Desktop/GMID-Designer/cpp/build/tests/test_math[1]_tests.cmake	b9737936fe9f508

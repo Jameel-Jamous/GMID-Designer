@@ -6,13 +6,19 @@ A tool intended for determining sizings for intial designs for analog SSI utiliz
 
 $g_m/I_D$ Design Methodology is a technique often used by designers to get an idea of how to size transistors for thier applications.
 
-TO DO: Elaborate more and cater to the repo
+This technique involves selecting a known value of $g_m/I_D$ and evaluating it across various different design parameters that depend on this ratio.
+These dependencies can be derived analytically or extracted from simulation data. A common parameter that has a dependence is
+the **current density ($I_D/W$)**. Since designers often have a target **drain current ($I_D$)** in mind, they can use this relationship to work backwards
+and determine the actual transistor width.
 
-If you would like to know more the following is a pretty good paper to read: [A Basic Introduction to the gm-id Based Design Methodology](https://picture.iczhiku.com/resource/eetop/SHITwppaOwepYMBX.pdf) 
+While powerful, this approach involves working with a large amounts of data and plots, thus making manual iterations through plots and interpolations quite tedious and laborious.
+This is where **GMID-Designer** comes in: it streamlines the process by letting you visualize and explore all relevant data in one place. 
+
+For more about the methodology itself, check out this neat article: [A Basic Introduction to the gm-id Based Design Methodology](https://picture.iczhiku.com/resource/eetop/SHITwppaOwepYMBX.pdf) 
 
 ## Installation
 
-*Disclaimer:* Currently only a prototyped version of the tool is deployed and working. A more performant version in `C++` will be made in the near future.
+*Disclaimer:* Currently, only a prototyped python version of the tool is deployed and working. A more performant version in `C++` will be made in the near future.
 
 TO DO: Provide installation instructions
 
@@ -41,7 +47,7 @@ vov gmoverid jd ... cdsovercgs variable_you_want_to_capture
 
 Remember you need to set the `GMID_DATA_PATH` to point to your data. Also, note that the way the headers are formatted will be the way they are formatted on the plots.
 
-> NOTE: All data used from this example is from `./python/sample_data/nmos.csv` which is data obatined from the open source SKY130 PDK.
+> NOTE: All data used for this section is from `./python/sample_data/nmos.csv` which is current efficiency data obatined from the open source SKY130 PDK.
 
 ### Setting the Design Header
 
